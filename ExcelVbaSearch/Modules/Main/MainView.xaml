@@ -1,0 +1,129 @@
+﻿<UserControl x:Class="ExcelVbaSearch.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ExcelVbaSearch"
+             xmlns:se="clr-namespace:StswExpress;assembly=StswExpress"
+             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="750" d:Background="White">
+
+    <UserControl.Resources>
+        <se:StswBindingProxy x:Key="ViewModelProxy" Proxy="{Binding}"/>
+    </UserControl.Resources>
+    <UserControl.InputBindings>
+        <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+    </UserControl.InputBindings>
+    <se:StswContentDialog Identifier="MainView">
+        <DockPanel>
+            <se:StswLabelPanel DockPanel.Dock="Top" 
+                               Margin="30 30 30 0">
+                <se:StswText DockPanel.Dock="Top" 
+                             Text="Wpisz frazę, którą chcesz wyszukać: " 
+                             FontSize="15" 
+                             FontWeight="Medium" 
+                             VerticalAlignment="Center" />
+                <se:StswTextBox Text="{Binding SearchingText, UpdateSourceTrigger=PropertyChanged}"  
+                                FontSize="14">
+                    <se:StswTextBox.SubControls>
+                        <se:StswSubButton Command="{Binding ClearBoxCommand}" 
+                                          CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type se:StswTextBox}}}" 
+                                          IconData="{x:Static se:StswIcons.Close}" 
+                                          Margin="0 0 3 0"/>
+                    </se:StswTextBox.SubControls>
+                </se:StswTextBox>
+                <se:StswText HorizontalAlignment="Right" 
+                             Text="Wybierz folder z excelami: "  
+                             FontSize="15" 
+                             FontWeight="Medium" 
+                             Margin="0 30" 
+                             VerticalAlignment="Center"/>
+
+                <se:StswPathPicker SelectedPath="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="0 30" 
+                                   FontSize="14" 
+                                   SelectionUnit="OpenDirectory">
+
+                    <se:StswPathPicker.SubControls>
+                        <se:StswSubButton Command="{Binding ClearBoxCommand}" 
+                                          CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type se:StswPathPicker}}}" 
+                                          IconData="{x:Static se:StswIcons.Close}" 
+                                          Margin="0 0 3 0"/>
+                    </se:StswPathPicker.SubControls>
+                </se:StswPathPicker>
+            </se:StswLabelPanel>
+            <UniformGrid DockPanel.Dock="Top" 
+                         Rows="1" 
+                         HorizontalAlignment="Center">
+                <se:StswButton HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               Padding="15 5" Margin="20 5" 
+                               Command="{Binding SearchCommand}">
+
+                    <se:StswLabel IconData="{x:Static se:StswIcons.Magnify}" 
+                                  Content="Szukaj" FontSize="15" 
+                                  IconFill="{DynamicResource StswColor.Neutral}" 
+                                  IconScale="1.7" 
+                                  IsBusy="{Binding IsBusySearch}"/>
+                </se:StswButton>
+
+                <se:StswButton HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               Padding="15 5" Margin="5" 
+                               Command="{Binding ExportToFileCommand}">
+
+                    <se:StswLabel IconData="{x:Static se:StswIcons.FileExport}" 
+                                  Content="Export do pliku" 
+                                  FontSize="15" 
+                                  IconFill="{DynamicResource StswColor.Modify}" 
+                                  IconScale="1.7" 
+                                  IsBusy="{Binding IsBusyExport}"/>
+                </se:StswButton>
+            </UniformGrid>
+
+            <DockPanel Margin="3 2 10 2" LastChildFill="False" DockPanel.Dock="Bottom">
+                <!-- Panel z lewej strony -->
+                <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <se:StswText>
+                        <Run Text="Znaleziono: "/>
+                        <Run Text="{Binding FoundFilesCount}" 
+                             Foreground="{DynamicResource StswColor.Positive}" 
+                             FontWeight="Medium"/>
+                    </se:StswText>
+                </StackPanel>
+
+                <!-- Panel z prawej strony -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <se:StswText VerticalAlignment="Center">
+                        <Run Text="Czas: "/>
+                    </se:StswText>
+                    <se:StswTimerControl FontSize="12"   
+                                         CurrentTime="{Binding CurrentTime, Mode=TwoWay}"
+                                         StartStopReset="{Binding StartStopReset, Mode=TwoWay}"
+                                         Format="mm\:ss"
+                                         StartTime="00:00:00"
+                                         EndTime="100:00:00"
+                                         IsCountingDown="False"
+                                         FontWeight="Medium"
+                                         Foreground="{DynamicResource StswColor.Positive}" />
+                </StackPanel>
+            </DockPanel>
+
+            <se:StswListBox ItemsSource="{Binding ExcelsPath}">
+                <se:StswListBox.ItemContainerStyle>
+                    <Style TargetType="se:StswListBoxItem">
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <se:StswContextMenu>
+                                    <se:StswMenuItem Header="Kopiuj nazwę excela"
+                                                     IconData="{x:Static se:StswIcons.ContentCopy}"
+                                                     Command="{Binding Proxy.CopyNameExcelCommand, Source={StaticResource ViewModelProxy}}"
+                                                     CommandParameter="{Binding}" />
+                                </se:StswContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </se:StswListBox.ItemContainerStyle>
+            </se:StswListBox>
+        </DockPanel>
+    </se:StswContentDialog>
+</UserControl>

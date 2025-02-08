@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="ExcelVbaSearch.ExportToFileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ExcelVbaSearch"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:se="clr-namespace:StswExpress;assembly=StswExpress"
+             Height="300" Width="550" BorderThickness="1" Background="White">
+    <Border>
+        <DockPanel>
+
+            <UniformGrid DockPanel.Dock="Bottom" Rows="1">
+                <se:StswButton Padding="10" CornerRadius="0 0 0 5" BorderThickness="0 1 1 0" FontSize="15" Background="WhiteSmoke" Command="{Binding ExportCommand}" FontWeight="Medium">
+                    <se:StswLabel Content="Export" IconData="{x:Static se:StswIcons.Check}" IconFill="{DynamicResource StswColor.Positive}"/>
+                </se:StswButton>
+                <se:StswButton  CornerRadius="0 0 5 0" BorderThickness="1 1 0 0" FontSize="15" Background="WhiteSmoke" Command="{Binding CancelCommand}">
+                    <se:StswLabel Content="Anuluj" IconData="{x:Static se:StswIcons.Cancel}" IconFill="{DynamicResource StswColor.Negative}" FontWeight="Medium"/>
+                </se:StswButton>
+            </UniformGrid>
+            
+            <DockPanel>
+                <se:StswProgressBar DockPanel.Dock="Bottom" Height="30" State="{Binding ProgressState}" Value="{Binding Progress, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding ProgressMaximum}"/>
+                
+                <se:StswLabelPanel LabelHorizontalAlignment="Right" Margin="40 50 40 0" VerticalAlignment="Center">
+                    <se:StswLabel Content="Nazwa pliku: "
+                                  FontSize="15" 
+                                  FontWeight="Medium" />
+                    <se:StswTextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}">
+                        <se:StswTextBox.SubControls>
+                            <se:StswSubButton Command="{Binding ClearBoxCommand}" 
+                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type se:StswTextBox}}}" 
+                                              IconData="{x:Static se:StswIcons.Close}" 
+                                              Margin="0 0 3 0"/>
+                        </se:StswTextBox.SubControls>
+                    </se:StswTextBox>
+
+                    <se:StswLabel Content="Ścieżka zapisu pliku: " 
+                                  Margin="0 20" 
+                                  FontSize="15" 
+                                  FontWeight="Medium" />
+                    <se:StswPathPicker Margin="0 20" SelectedPath="{Binding FolderPath, UpdateSourceTrigger=PropertyChanged}" SelectionUnit="OpenDirectory">
+                        <se:StswPathPicker.SubControls>
+                            <se:StswSubButton Command="{Binding ClearBoxCommand}" 
+                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type se:StswPathPicker}}}" 
+                                              IconData="{x:Static se:StswIcons.Close}" 
+                                              Margin="0 0 3 0"/>
+                        </se:StswPathPicker.SubControls>
+                    </se:StswPathPicker>
+                </se:StswLabelPanel>
+
+                
+            </DockPanel>
+        </DockPanel>
+    </Border>
+</UserControl>
